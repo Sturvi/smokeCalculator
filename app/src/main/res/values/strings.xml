@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Smoke Calculator</string>
+    <string name="widget_description">Quick cigarette counter</string>
+
+    <!-- Main Screen -->
+    <string name="smoke_button">Smoke Cigarette</string>
+    <string name="remaining_today">Remaining Today</string>
+    <string name="time_since_last">Time Since Last</string>
+    <string name="over_limit">Over Limit</string>
+
+    <!-- Navigation -->
+    <string name="nav_home">Home</string>
+    <string name="nav_statistics">Statistics</string>
+    <string name="nav_settings">Settings</string>
+
+    <!-- Statistics -->
+    <string name="stats_today">Today</string>
+    <string name="stats_avg_day">Average per Day</string>
+    <string name="stats_avg_week">Average per Week</string>
+    <string name="stats_avg_month">Average per Month</string>
+    <string name="cigarettes">cigarettes</string>
+    <string name="cigarette">cigarette</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Settings</string>
+    <string name="cigarette_price">Cigarette Price</string>
+    <string name="pack_size">Pack Size</string>
+    <string name="daily_target">Daily Target</string>
+    <string name="day_start_time">Day Start Time</string>
+    <string name="desired_interval">Desired Interval (minutes)</string>
+    <string name="currency_azn">AZN</string>
+
+    <!-- Widget -->
+    <string name="widget_add_cigarette">Add Cigarette</string>
+    <string name="widget_open_app">Open App</string>
+</resources>
