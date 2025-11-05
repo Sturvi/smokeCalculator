@@ -9,6 +9,7 @@ import com.smokecalculator.domain.model.Statistics
 import com.smokecalculator.domain.repository.CigaretteRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import java.util.Calendar
 import javax.inject.Inject
@@ -58,9 +59,10 @@ class CigaretteRepositoryImpl @Inject constructor(
         // Calculate average per day from all history
         val allCigarettes = dao.getCigaretteCountSince(0)
         val avgPerDay = if (allCigarettes > 0) {
-            val firstCigarette = dao.getAllCigarettes().map { it.lastOrNull() }
-            val days = firstCigarette?.let {
-                ((now - (it.firstOrNull()?.timestamp ?: now)) / (1000 * 60 * 60 * 24)).toInt().coerceAtLeast(1)
+            val allCigarettesList = dao.getAllCigarettes().first()
+            val oldestCigarette = allCigarettesList.lastOrNull()
+            val days = oldestCigarette?.let {
+                ((now - it.timestamp) / (1000 * 60 * 60 * 24)).toInt().coerceAtLeast(1)
             } ?: 1
             allCigarettes.toFloat() / days
         } else {
