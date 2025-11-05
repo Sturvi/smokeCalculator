@@ -65,13 +65,9 @@ object WidgetDataProvider {
 
     private fun formatTimeSince(lastTime: Long): String {
         val diffSeconds = (System.currentTimeMillis() - lastTime) / 1000
-        val hours = diffSeconds / 3600
-        val minutes = (diffSeconds % 3600) / 60
+        val minutes = diffSeconds / 60
+        val seconds = diffSeconds % 60
 
-        return if (hours > 0) {
-            String.format("%dh %dm", hours, minutes)
-        } else {
-            String.format("%dm", minutes)
-        }
+        return String.format("%02d:%02d", minutes, seconds)
     }
 }
