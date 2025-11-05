@@ -115,7 +115,7 @@ adb install app/build/outputs/apk/debug/app-debug.apk
 4. Перетащите виджет на домашний экран
 
 ## Структура проекта
-
+ 
 ```
 app/src/main/java/com/smokecalculator/
 ├── data/
