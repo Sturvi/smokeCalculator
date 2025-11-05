@@ -17,15 +17,22 @@ import javax.inject.Inject
 
 class SmokeWidgetReceiver : AppWidgetProvider() {
 
-    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
-
     override fun onUpdate(
         context: Context,
         appWidgetManager: AppWidgetManager,
         appWidgetIds: IntArray
     ) {
-        appWidgetIds.forEach { widgetId ->
-            updateWidget(context, appWidgetManager, widgetId)
+        val pendingResult = goAsync()
+        val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
+
+        scope.launch {
+            try {
+                appWidgetIds.forEach { widgetId ->
+                    updateWidget(context, appWidgetManager, widgetId)
+                }
+            } finally {
+                pendingResult.finish()
+            }
         }
     }
 
@@ -34,9 +41,16 @@ class SmokeWidgetReceiver : AppWidgetProvider() {
 
         when (intent.action) {
             ACTION_SMOKE_CIGARETTE -> {
+                val pendingResult = goAsync()
+                val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
+
                 scope.launch {
-                    WidgetDataProvider.addCigarette(context)
-                    updateAllWidgets(context)
+                    try {
+                        WidgetDataProvider.addCigarette(context)
+                        updateAllWidgets(context)
+                    } finally {
+                        pendingResult.finish()
+                    }
                 }
             }
             ACTION_OPEN_APP -> {
@@ -48,31 +62,29 @@ class SmokeWidgetReceiver : AppWidgetProvider() {
         }
     }
 
-    private fun updateWidget(
+    private suspend fun updateWidget(
         context: Context,
         appWidgetManager: AppWidgetManager,
         widgetId: Int
     ) {
-        scope.launch {
-            val data = WidgetDataProvider.getWidgetData(context)
+        val data = WidgetDataProvider.getWidgetData(context)
 
-            val views = RemoteViews(context.packageName, R.layout.smoke_widget_layout).apply {
-                setTextViewText(R.id.widget_count, "${data.todayCount}")
-                setTextViewText(R.id.widget_timer, data.timeSinceLast)
+        val views = RemoteViews(context.packageName, R.layout.smoke_widget_layout).apply {
+            setTextViewText(R.id.widget_count, "${data.todayCount}")
+            setTextViewText(R.id.widget_timer, data.timeSinceLast)
 
-                setOnClickPendingIntent(
-                    R.id.widget_smoke_button,
-                    getPendingIntent(context, ACTION_SMOKE_CIGARETTE)
-                )
+            setOnClickPendingIntent(
+                R.id.widget_smoke_button,
+                getPendingIntent(context, ACTION_SMOKE_CIGARETTE)
+            )
 
-                setOnClickPendingIntent(
-                    R.id.widget_open_button,
-                    getPendingIntent(context, ACTION_OPEN_APP)
-                )
-            }
-
-            appWidgetManager.updateAppWidget(widgetId, views)
+            setOnClickPendingIntent(
+                R.id.widget_open_button,
+                getPendingIntent(context, ACTION_OPEN_APP)
+            )
         }
+
+        appWidgetManager.updateAppWidget(widgetId, views)
     }
 
     private fun updateAllWidgets(context: Context) {
